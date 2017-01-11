@@ -1,0 +1,4 @@
+本项目为使用Java语言写的Uiautomator自动化测试脚本程序：
+  1、 AddEmailAccount: 添加手写邮件的邮箱账户测试
+  2、 AppTest: E本上常用几个应用的自动化测试
+  3、 WlanTest：E本上WiFi开关自动化及压力测试

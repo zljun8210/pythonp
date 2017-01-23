@@ -25,35 +25,36 @@ def converts():  # 获取txt文档中的数据，并按两列重新写入到xls�
     f = open(sn.get(), "r")
     out = open(nam.get(), "w")
     out.write(" Time \t" + " Memory(M) \n")
+    t_word["state"] = "normal"
     t_word.delete(0.0)
-    t_word.insert("insert","开始处理：\n")
+    t_word.insert("end","开始处理：\n")
     for line in f.readlines():
-        #print("    当前数据是: %s" % line.strip())
-        t_word.insert("insert","    当前数据是: " + line.strip())
+        t_word.insert("end","  当前数据是: " + line.strip())
+        t_word.see("end")
         if a == 1:
             out.write(line.strip() + "\t")  # 以前数据只有1列，转为两列时，第一列后面按制表符
             a = 0
             lines += 1
-            t_word.insert("insert","\n")
+            t_word.insert("end","\n")
+            t_word.see("end")
         else:
             dat = line.strip()
             m = int(''.join(dat.split(',')))  # 数据中如有 ，的，去除，
             m = float(m / 1024)
             out.write("%.2f" % m + "\n")
             a = 1
-            t_word.insert("insert","\n")
+            t_word.insert("end","\n")
+            t_word.see("end")
 
     f.close()
     out.close()
 
-    #print()
-    #print()
-    #print("\t 一共处理了 %d 组数据" % lines + "\n")
-    #print()
-    t_word.insert("insert","\n")
-    t_word.insert("insert","\n")
-    t_word.insert("insert","\t 一共处理了 "+ str(lines) +" 组数据" + "\n")
-    t_word.insert("insert","\n")
+    t_word.insert("end","\n")
+    t_word.insert("end","\n")
+    t_word.insert("end","\t 一共处理了 "+ str(lines) +" 组数据" + "\n")
+    t_word.insert("end","\n")
+    t_word["state"] = "disabled"
+    t_word.see("end")
 
 l_sf = tk.Label(window,text="Source File: ").place(x=30,y=40)
 e_sf = tk.Entry(window,width=28,textvariable =sn )
@@ -67,7 +68,7 @@ btn_tar = tk.Button(window,text="Save to",command=br_file).place(x=310,y=80)
 
 btn_do = tk.Button(window,text="Convert ",command = converts).place(x=100,y=120)
 
-t_word = tk.Text(window, height=15,width=50)
+t_word = tk.Text(window, height=15,width=50,bg = "black", fg = "green",state = "disabled")
 t_word.place(x=28,y=160)
 
 

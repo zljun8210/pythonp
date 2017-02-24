@@ -20,31 +20,43 @@ sn = tk.StringVar()
 nam = tk.StringVar()
 
 def converts():  # 获取txt文档中的数据，并按两列重新写入到xls文件中，其中第2列为内存值，单位为M
-    a = 1
+    a = 0
     lines = 0
     f = open(sn.get(), "r")
     out = open(nam.get(), "w")
-    out.write(" Time \t" + " Memory(M) \n")
+    out.write(" Time \t" + " Memory(M) \t" + " CPU (%) \n")
     t_word["state"] = "normal"
     t_word.delete(0.0)
     t_word.insert("end","开始处理：\n")
+    l = 1
     for line in f.readlines():
-        t_word.insert("end","  当前数据是: " + line.strip())
-        t_word.see("end")
-        if a == 1:
+        t = (l+1)%4
+        if t != 0:
+            t_word.insert("end","  第 " + str(l) + " 行数据是: " + line.strip())
+            t_word.see("end")
+        if a == 0:
             out.write(line.strip() + "\t")  # 以前数据只有1列，转为两列时，第一列后面按制表符
-            a = 0
+            a = 1
             lines += 1
             t_word.insert("end","\n")
             t_word.see("end")
-        else:
+        elif a == 1:
             dat = line.strip()
-            m = int(''.join(dat.split(',')))  # 数据中如有 ，的，去除，
-            m = float(m / 1024)
-            out.write("%.2f" % m + "\n")
-            a = 1
+            m = float(''.join(dat.split(',')))  # 数据中如有 ，的，去除，
+            m = float(m / 1048576)
+            out.write("%.2f" % m + "\t")
+            a = 2
             t_word.insert("end","\n")
             t_word.see("end")
+        elif a ==2:
+            a = 3
+            t_word.see("end")
+        else:
+            out.write(line.strip() + "\n")  # CPU %
+            a = 0
+            t_word.insert("end","\n")
+            t_word.see("end")
+        l+=1
 
     f.close()
     out.close()

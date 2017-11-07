@@ -1,10 +1,10 @@
 #! encoding:utf-8
-import  sys
+import  os
 import  logging
 import  xlrd
 import  traceback
 try:
-    from lxml import  etree
+    from lxml import etree
 except ImportError:
     import xml.etree.cElementTree as etree
 import tkinter
@@ -64,7 +64,7 @@ class Converter():
 
         # self.st = tkinter.Text(self.t)
         # self.st.place(x=5,y=110,width=400,height=200)
-        self.labinfo = Label(self.t,text ="  Testlink软件之XLS转XML工具 \n  作者：曾良均 \n  Ver: 0.1(20170703) ")
+        self.labinfo = Label(self.t,text ="  Testlink软件之XLS转XML工具 \n  作者：曾良均 \n  Ver: 0.2(20171106) ")
         self.labinfo.place(x=60,y=150)
 
     #选取文件路径
@@ -115,6 +115,7 @@ class Converter():
                 step_ = sheet.row_values(seq)[4]
                 expect_ = sheet.row_values(seq)[5]
                 exe_type_ = sheet.row_values(seq)[6]
+                keyword_ = sheet.row_values(seq)[7]
 
                 test_case = etree.SubElement(testcases, 'testcase', name=name_)
                 summary = etree.SubElement(test_case, 'summary')
@@ -160,6 +161,21 @@ class Converter():
                 execution_type.text = str(int(exe_type_))
                 print(execution_type.text)
 
+                keywords = etree.SubElement(test_case, 'keywords')
+                tmpf = open("tmp.txt", 'w')
+                tmpf.write(keyword_)
+                tmpf.close()
+                outf = open("tmp.txt", 'r')
+                for line in outf.readlines():
+                    keyword = etree.SubElement(keywords, 'keyword', name=line)
+                    # line = line.replace("\n", "</br>")
+                    print(line)
+                    keyword.text = format_str(line)
+                    print(keyword.text)
+
+                outf.close()
+                os.remove("tmp.txt")
+
             except Exception as e:
                 print("line:", seq)
                 print(str(e))
@@ -167,7 +183,6 @@ class Converter():
                     print(item())
 
         s = etree.tostring(testcases, pretty_print=True)
-        # s = etree.tostring(testcases)
         pathlist = path.split("/")
         pathlist.pop()
         newpath = '/'.join(pathlist)
